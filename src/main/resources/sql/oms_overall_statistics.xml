@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lenovo.data.statistics.sqlmapper.OverAllStatisticsMapper">
+
+	<cache />
+	
+	<select id="selectOverAllStatistics" parameterType="OverAllStatistics"
+		resultType="OverAllStatistics">
+		SELECT ID as id,ACTIVE_USERNUM as activateUserNum, REGISTER_USERNUM as registerUserNum,
+		OFFLINE_USERNUM as offlineUserNum, LOGIN_USERNUM as loginUserNum, SYNC_USERNUM as syncUserNum, ALL_NOTECOUNT as allNoteCount,
+		ALL_RESOURCECOUNT as allResourceCount, TASKCOUNT as taskCount, STATISTICS_TIME as statisticsTime, SYSTEM_TIME as systemTime
+		FROM
+		oms_overall_statistics
+		WHERE oms_overall_statistics.STATISTICS_TIME >=
+		${statisticsTime}
+	</select>
+
+	<select id="getMaxOverAllStatistics" parameterType="OverAllStatistics"
+		resultType="OverAllStatistics">
+		SELECT  ID as id,ACTIVE_USERNUM as activateUserNum, REGISTER_USERNUM as registerUserNum,
+		OFFLINE_USERNUM as offlineUserNum, LOGIN_USERNUM as loginUserNum, SYNC_USERNUM as syncUserNum, ALL_NOTECOUNT as allNoteCount,
+		ALL_RESOURCECOUNT as allResourceCount, TASKCOUNT as taskCount, STATISTICS_TIME as statisticsTime, SYSTEM_TIME as systemTime
+		FROM oms_overall_statistics ORDER BY ID DESC LIMIT 1
+	</select>
+
+	<insert id="insertOverAllStatistics" parameterType="OverAllStatistics">
+		INSERT INTO
+		oms_overall_statistics
+		(ACTIVE_USERNUM, REGISTER_USERNUM,
+		OFFLINE_USERNUM, LOGIN_USERNUM, SYNC_USERNUM, ALL_NOTECOUNT,
+		ALL_RESOURCECOUNT, TASKCOUNT, STATISTICS_TIME, SYSTEM_TIME)
+		VALUES
+		(#{activateUserNum}, #{registerUserNum}, #{offlineUserNum},
+		#{loginUserNum}, #{syncUserNum}, #{allNoteCount}, #{allResourceCount},
+		#{taskCount}, #{statisticsTime}, #{systemTime})
+	</insert>
+
+</mapper>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lenovo.data.statistics.sqlmapper.DeviceStatisticsMapper">
+
+	<cache />
+
+	<select id="selectDeviceRecord" parameterType="DeviceRecord"
+		resultType="DeviceRecord">
+		SELECT ID as id,DEVICEID as deviceId, DEVICE_TYPE as
+		deviceType, CC as cc, SOURCE as source, CHANNEL as channel, VERSION as
+		version, NETWORK as network, IP as ip, OPERATE_TYPE as operateType,
+		ISUSABLE as isUsable, CREATE_TIME as createTime, SYSTEM_TIME as
+		systemTime
+		FROM oms_device_statistics
+		WHERE
+		oms_device_statistics.DEVICEID = #{deviceId}
+		AND
+		oms_device_statistics.SOURCE = #{source}
+		AND
+		oms_device_statistics.VERSION = #{version}
+		AND
+		oms_device_statistics.ISUSABLE = #{isUsable}
+		ORDER BY ID DESC LIMIT 1
+	</select>
+
+	<insert id="insertDeviceRecord" parameterType="DeviceRecord">
+		INSERT INTO
+		oms_device_statistics
+		(DEVICEID, DEVICE_TYPE, CC, SOURCE, CHANNEL,
+		VERSION, NETWORK, IP, OPERATE_TYPE,
+		ISUSABLE, CREATE_TIME, SYSTEM_TIME)
+		VALUES
+		(#{deviceId}, #{deviceType}, #{cc}, #{source}, #{channel},
+		#{version}, #{network},
+		#{ip}, #{operateType}, #{isUsable},
+		#{createTime},
+		#{systemTime})
+	</insert>
+
+	<update id="updateDeviceRecordInitialTime" parameterType="DeviceRecord">
+		UPDATE
+		oms_device_statistics SET
+		OPERATE_TYPE = #{operateType},
+		INITIAL_TIME =
+		#{initialTime},
+		SYSTEM_TIME = #{systemTime}
+		WHERE
+		oms_device_statistics.DEVICEID = #{deviceId}
+		AND
+		oms_device_statistics.SOURCE = #{source}
+		AND
+		oms_device_statistics.VERSION = #{version}
+		AND
+		oms_device_statistics.ISUSABLE = #{isUsable}
+	</update>
+
+	<update id="updateActiveDeviceUsable" parameterType="DeviceRecord">
+		UPDATE
+		oms_device_statistics
+		INNER JOIN (SELECT
+		DEVICEID,VERSION,MAX(CREATE_TIME) AS CREATE_TIME FROM
+		oms_device_statistics WHERE DEVICEID!='unknown' AND CREATE_TIME >=
+		#{createTime}
+		GROUP BY DEVICEID,VERSION) odrg
+		ON oms_device_statistics.DEVICEID=odrg.DEVICEID AND
+		oms_device_statistics.VERSION=odrg.VERSION AND
+		oms_device_statistics.CREATE_TIME=odrg.CREATE_TIME
+		SET ISUSABLE =
+		#{isUsable}
+	</update>
+
+</mapper>

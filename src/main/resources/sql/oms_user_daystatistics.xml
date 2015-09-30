@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lenovo.data.statistics.sqlmapper.UserDayStatisticsMapper">
+
+  <cache />
+
+   	<select id="selectUserDayStatistics" parameterType="java.util.Map"
+		resultType="UserDayStatistics">
+		SELECT ID,DEVICEID, SOURCE, VERSION, NETWORK, IP, USERID, NOTECOUNT, CATECOUNT, TAGCOUNT, RESOURCECOUNT, 
+		DAY_LOGINNUM, DAY_SYNCNUM, CLIENT_DATATIME, SYSTEM_TIME
+		FROM oms_user_daystatistics
+		WHERE 
+		<if test="endStatisticsTime != null">
+		    oms_user_daystatistics.CLIENT_DATATIME > #{startStatisticsTime}
+		    AND
+			oms_user_daystatistics.CLIENT_DATATIME <![CDATA[<]]> #{endStatisticsTime}
+		</if>
+		
+	</select>
+  
+ 	<select id="countUserDayStatistics" parameterType="java.util.Map"
+		resultType="Long">
+		SELECT COUNT(*)
+		FROM oms_user_daystatistics
+		WHERE oms_user_daystatistics.CLIENT_DATATIME <![CDATA[<]]> #{endStatisticsTime}
+		<if test="userId != null">
+		 AND oms_useractive_statistics.USERID = #{userId}
+		</if>
+	</select>
+
+	<insert id="insertUserDayStatistics" parameterType="UserDayStatistics">
+		INSERT INTO oms_useractive_statistics
+		(DEVICEID, SOURCE, VERSION, NETWORK, IP, USERID, NOTECOUNT, CATECOUNT, TAGCOUNT, RESOURCECOUNT, 
+		DAY_LOGINNUM, DAY_SYNCNUM, CLIENT_DATATIME, SYSTEM_TIME)
+		VALUES
+		(#{deviceId}, #{source}, #{version}, #{network}, #{ip}, #{userId}, #{noteCount},  #{categoryCount},  #{tagCount},
+		  #{resourceCount}, #{dayLoginNum}, #{daySyncNum}, #{clientDataTime}, #{systemTime})
+	</insert>
+
+	<update id="updateDayUserNum" parameterType="UserDayStatistics">
+		UPDATE oms_user_daystatistics SET
+		DAY_LOGINNUM = #{dayLoginNum}, 
+		DAY_SYNCNUM = #{daySyncNum},
+		SYSTEM_TIME = #{systemTime}
+		WHERE oms_user_daystatistics.USERID = #{userId} 
+		AND oms_user_daystatistics.CLIENT_DATATIME = #{clientDataTime}
+	</update>
+	
+</mapper>

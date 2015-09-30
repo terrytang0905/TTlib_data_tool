@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+		<typeAlias alias="DeviceRecord" type="com.lenovo.data.statistics.datamodel.DeviceRecord" />
+		<typeAlias alias="RegisterUserRecord" type="com.lenovo.data.statistics.datamodel.RegisterUserRecord" />
+		<typeAlias alias="UserActiveStatistics" type="com.lenovo.data.statistics.datamodel.UserActiveStatistics" />
+		<typeAlias alias="UserLoginStatistics" type="com.lenovo.data.statistics.datamodel.UserLoginStatistics" />
+		<typeAlias alias="UserSyncStatistics" type="com.lenovo.data.statistics.datamodel.UserSyncStatistics" />
+		<typeAlias alias="UserDayStatistics" type="com.lenovo.data.statistics.datamodel.UserDayStatistics" />
+		<typeAlias alias="OverAllStatistics" type="com.lenovo.data.statistics.datamodel.OverAllStatistics" />
+	</typeAliases>
+
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="org.mariadb.jdbc.Driver" />
+				<property name="url" value="jdbc:mariadb://192.168.1.101:3316/lnoms" />
+				<property name="username" value="oms" />
+				<property name="password" value="lenote2013" />
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<mappers>
+		<mapper resource="sql/oms_device_statistics.xml" />
+		<mapper resource="sql/oms_reguser_statistics.xml" />
+		<mapper resource="sql/oms_user_daystatistics.xml" />
+		<mapper resource="sql/oms_useractive_statistics.xml" />
+		<mapper resource="sql/oms_userlogin_statistics.xml" />
+		<mapper resource="sql/oms_usersync_statistics.xml" />
+		<mapper resource="sql/oms_overall_statistics.xml" />
+	</mappers>
+
+</configuration>

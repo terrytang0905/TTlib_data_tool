@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.lenovo.data.statistics.sqlmapper.UserActiveStatisticsMapper">
+
+	<cache />
+
+	<select id="selectUserActiveStatistics" parameterType="UserActiveStatistics"
+		resultType="UserActiveStatistics">
+		SELECT ID as id, DEVICEID as deviceId, SOURCE as source,
+		VERSION as version, NETWORK as network, IP as ip, OPERATE_TYPE as
+		operateType, USERID as userId,
+		ACCESS_TIME as accessTime,SYSTEM_TIME as systemTime
+		FROM oms_useractive_statistics
+		WHERE oms_useractive_statistics.DEVICEID = #{deviceId}
+		AND
+		oms_useractive_statistics.SOURCE = #{source}
+		AND
+		oms_useractive_statistics.VERSION = #{version}
+	</select>
+
+	<select id="countUserActiveRecord" parameterType="java.util.Map"
+		resultType="Long">
+		SELECT COUNT(*)
+		FROM oms_useractive_statistics
+		WHERE
+		oms_useractive_statistics.ACCESS_TIME <![CDATA[<]]>
+		#{endStatisticsTime}
+		AND oms_useractive_statistics.OPERATE_TYPE = 5
+		<if test="userId != null">
+			AND oms_useractive_statistics.USERID = #{userId}
+		</if>
+	</select>
+
+	<insert id="insertUserActiveStatistics" parameterType="UserActiveStatistics">
+		INSERT
+		INTO oms_useractive_statistics
+		(DEVICEID, SOURCE, VERSION, NETWORK, IP,
+		OPERATE_TYPE, USERID,
+		ACCESS_TIME,SYSTEM_TIME)
+		VALUES
+		(#{deviceId}, #{source}, #{version}, #{network}, #{ip},
+		#{operateType}, #{userId},
+		#{accessTime},#{systemTime})
+	</insert>
+
+</mapper>

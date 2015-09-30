@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.lenovo.data.statistics.sqlmapper.RegisterUserStatisticsMapper">
+
+	<cache />
+
+	<select id="selectRegisterUserRecord" parameterType="RegisterUserRecord"
+		resultType="RegisterUserRecord">
+		SELECT ID as id, DEVICEID as deviceId, SOURCE as source,
+		VERSION as version, NETWORK as network, IP as ip, USERID as userId,
+		REGISTER_TYPE as registerType, REGISTER_TIME as registerTime,
+		USER_NOTECOUNT as userNoteCount, USER_CATECOUNT as userCategoryCount,
+		USER_TAGCOUNT as userTagCount,USER_RESOURCECOUNT as
+		userResourceCount,USER_LOGINNUM as userLoginNum,USER_SYNCNUM as
+		userSyncNum,
+		LAST_LOGIN_TIME as lastLoginTime,LAST_SYNC_TIME as
+		lastSyncTime,SYSTEM_TIME as systemTime
+		FROM oms_reguser_statistics
+		WHERE oms_reguser_statistics.REGISTER_TIME > #{registerTime}
+	</select>
+
+	<select id="selectRegisterUserRecordByDevice" parameterType="RegisterUserRecord"
+		resultType="RegisterUserRecord">
+		SELECT ID as id, DEVICEID as deviceId, SOURCE as source,
+		VERSION as version, NETWORK as network, IP as ip, USERID as userId,
+		REGISTER_TYPE as registerType, REGISTER_TIME as registerTime,
+		USER_NOTECOUNT as userNoteCount, USER_CATECOUNT as userCategoryCount,
+		USER_TAGCOUNT as userTagCount,USER_RESOURCECOUNT as
+		userResourceCount,USER_LOGINNUM as userLoginNum,USER_SYNCNUM as
+		userSyncNum,
+		LAST_LOGIN_TIME as lastLoginTime,LAST_SYNC_TIME as
+		lastSyncTime,SYSTEM_TIME as systemTime
+		FROM oms_reguser_statistics
+		WHERE
+		oms_reguser_statistics.DEVICEID = #{deviceId}
+		AND
+		oms_reguser_statistics.SOURCE = #{source}
+		AND
+		oms_reguser_statistics.VERSION = #{version}
+	</select>
+
+	<select id="selectRegisterUserRecordByUser" parameterType="RegisterUserRecord"
+		resultType="RegisterUserRecord">
+		SELECT ID as id, DEVICEID as deviceId, SOURCE as source,
+		VERSION as version, NETWORK as network, IP as ip, USERID as userId,
+		REGISTER_TYPE as registerType, REGISTER_TIME as registerTime,
+		USER_NOTECOUNT as userNoteCount, USER_CATECOUNT as userCategoryCount,
+		USER_TAGCOUNT as userTagCount,USER_RESOURCECOUNT as
+		userResourceCount,USER_LOGINNUM as userLoginNum,USER_SYNCNUM as
+		userSyncNum,
+		LAST_LOGIN_TIME as lastLoginTime,LAST_SYNC_TIME as
+		lastSyncTime,SYSTEM_TIME as systemTime
+		FROM oms_reguser_statistics
+		WHERE
+		oms_reguser_statistics.USERID = #{userId}
+	</select>
+
+	<select id="countRegisterUserRecord" parameterType="RegisterUserRecord"
+		resultType="Long">
+		SELECT COUNT(*)
+		FROM oms_reguser_statistics
+		WHERE
+		<if test="endStatisticsTime != null">
+			oms_reguser_statistics.REGISTER_TIME <![CDATA[<]]>
+			#{endStatisticsTime}
+		</if>
+	</select>
+
+	<insert id="insertRegisterUserRecord" parameterType="RegisterUserRecord">
+		INSERT INTO
+		oms_reguser_statistics
+		(DEVICEID, SOURCE, VERSION, NETWORK, IP, USERID,
+		REGISTER_TYPE, REGISTER_TIME,
+		USER_NOTECOUNT, USER_CATECOUNT,
+		USER_TAGCOUNT,USER_RESOURCECOUNT,USER_LOGINNUM,USER_SYNCNUM,
+		LAST_LOGIN_TIME,LAST_SYNC_TIME,SYSTEM_TIME)
+		VALUES
+		(#{deviceId},
+		#{source}, #{version}, #{network}, #{ip}, #{userId}, #{registerType},
+		#{registerTime}, #{userNoteCount}, #{userCategoryCount},
+		#{userTagCount}, #{userResourceCount},
+		#{userLoginNum},#{userSyncNum},#{lastLoginTime},#{lastSyncTime},#{systemTime})
+	</insert>
+
+	<update id="updateRegUserStatistics" parameterType="RegisterUserRecord">
+		UPDATE
+		oms_reguser_statistics SET
+		DEVICEID = #{deviceId}, 
+		SOURCE = #{source}, 
+		VERSION = #{version},
+		NETWORK = #{network}, 
+		IP = #{ip}, 
+		REGISTER_TYPE =#{registerType}, 
+		REGISTER_TIME = #{registerTime}
+		WHERE
+		oms_reguser_statistics.USERID = #{userId}
+	</update>
+	
+	<update id="updateRegUserLoginStatistics" parameterType="RegisterUserRecord">
+		UPDATE
+		oms_reguser_statistics SET
+		USER_LOGINNUM = #{userLoginNum},
+		LAST_LOGIN_TIME = #{lastLoginTime},
+		SYSTEM_TIME = #{systemTime}
+		WHERE
+		oms_reguser_statistics.USERID = #{userId}
+	</update>
+
+	<update id="updateRegUserSyncStatistics" parameterType="RegisterUserRecord">
+		UPDATE
+		oms_reguser_statistics SET
+		USER_NOTECOUNT = #{userNoteCount},
+		USER_CATECOUNT = #{userCategoryCount},
+		USER_TAGCOUNT = #{userTagCount},
+		USER_RESOURCECOUNT = #{userResourceCount},
+		USER_SYNCNUM =
+		#{userSyncNum},
+		LAST_SYNC_TIME = #{lastSyncTime},
+		SYSTEM_TIME =
+		#{systemTime}
+		WHERE oms_reguser_statistics.USERID =
+		#{userId}
+	</update>
+
+</mapper>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lenovo.data.statistics.sqlmapper.MessageStatisticsMapper">
+
+	<cache />
+
+	<select id="selectMsgVersionStatistics" parameterType="MessageViewStatistics"
+		resultType="MessageViewStatistics">
+		SELECT ID as id, MSGID as messageId, VERSION as
+		version, VALID_COUNT as validCount, SYSTEM_TIME as
+		systemTime
+		FROM oms_message_version_statistics
+		WHERE
+		oms_message_version_statistics.MSGID = #{messageId}
+		AND
+		oms_message_version_statistics.VERSION = #{version}
+	</select>
+
+	<insert id="insertMsgVersionStatistics" parameterType="MessageViewStatistics">
+		INSERT INTO
+		oms_message_version_statistics
+		(MSGID, VERSION, VALID_COUNT, SYSTEM_TIME)
+		VALUES
+		(#{messageId}, #{version}, #{validCount}, #{systemTime})
+	</insert>
+
+	<update id="updateMsgVersionStatistics" parameterType="MessageViewStatistics">
+		UPDATE
+		oms_message_version_statistics SET
+		VALID_COUNT = #{validCount},
+		SYSTEM_TIME = #{systemTime}
+		WHERE
+		oms_message_version_statistics.MSGID = #{messageId}
+		AND
+		oms_message_version_statistics.VERSION = #{version}
+	</update>
+	
+	<select id="selectMsgChannelStatistics" parameterType="MessageChannelStatistics"
+		resultType="MessageChannelStatistics">
+		SELECT ID as id, MSGID as messageId, CHANNEL as
+		channel, VALID_COUNT as validCount, SYSTEM_TIME as
+		systemTime
+		FROM oms_message_channel_statistics
+		WHERE
+		oms_message_channel_statistics.MSGID = #{messageId}
+		AND
+		oms_message_channel_statistics.CHANNEL = #{channel}
+	</select>
+
+	<insert id="insertMsgChannelStatistics" parameterType="MessageChannelStatistics">
+		INSERT INTO
+		oms_message_channel_statistics
+		(MSGID, CHANNEL, VALID_COUNT, SYSTEM_TIME)
+		VALUES
+		(#{messageId}, #{channel}, #{validCount}, #{systemTime})
+	</insert>
+
+	<update id="updateMsgChannelStatistics" parameterType="MessageChannelStatistics">
+		UPDATE
+		oms_message_channel_statistics SET
+		VALID_COUNT = #{validCount},
+		SYSTEM_TIME = #{systemTime}
+		WHERE
+		oms_message_channel_statistics.MSGID = #{messageId}
+		AND
+		oms_message_channel_statistics.CHANNEL = #{channel}
+	</update>
+	
+	<select id="selectMsgDeviceStatistics" parameterType="MessageDeviceTypeStatistics"
+		resultType="MessageDeviceTypeStatistics">
+		SELECT ID as id, MSGID as messageId, DEVICE_TYPE as
+		deviceType, VALID_COUNT as validCount, SYSTEM_TIME as
+		systemTime
+		FROM oms_message_device_statistics
+		WHERE
+		oms_message_device_statistics.MSGID = #{messageId}
+		AND
+		oms_message_device_statistics.DEVICE_TYPE = #{deviceType}
+	</select>
+
+	<insert id="insertMsgDeviceStatistics" parameterType="MessageDeviceTypeStatistics">
+		INSERT INTO
+		oms_message_device_statistics
+		(MSGID, DEVICE_TYPE, VALID_COUNT, SYSTEM_TIME)
+		VALUES
+		(#{messageId}, #{deviceType}, #{validCount}, #{systemTime})
+	</insert>
+
+	<update id="updateMsgDeviceStatistics" parameterType="MessageDeviceTypeStatistics">
+		UPDATE
+		oms_message_device_statistics SET
+		VALID_COUNT = #{validCount},
+		SYSTEM_TIME = #{systemTime}
+		WHERE
+		oms_message_channel_statistics.MSGID = #{messageId}
+		AND
+		oms_message_channel_statistics.DEVICE_TYPE = #{deviceType}
+	</update>
+	
+</mapper>

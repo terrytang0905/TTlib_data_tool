@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lenovo.data.statistics.sqlmapper.UserSyncStatisticsMapper">
+
+	<cache />
+
+	<select id="selectUserSyncStatistics" parameterType="UserSyncStatistics"
+		resultType="UserSyncStatistics">
+		SELECT 
+		ID as id,DEVICEID as deviceId, SOURCE as source, VERSION as version, NETWORK as network, IP as ip,
+		OPERATE_TYPE as operateType, USERID as userId,
+		LOGIN_TYPE as loginType, SYNC_TIME as syncTime, SYSTEM_TIME as systemTime
+		FROM oms_usersync_statistics
+		WHERE
+		oms_usersync_statistics.USERID = #{userId}
+	</select>
+
+	<select id="countUserSyncRecord" parameterType="java.util.Map"
+		resultType="Integer">
+		SELECT COUNT(*)
+		FROM oms_usersync_statistics
+		WHERE
+		oms_usersync_statistics.OPERATE_TYPE = 22
+		<if test="startStatisticsTime != null">
+			AND oms_usersync_statistics.SYNC_TIME >
+			#{startStatisticsTime}
+		</if>
+		<if test="endStatisticsTime != null">
+			AND oms_usersync_statistics.SYNC_TIME <![CDATA[<]]>
+			#{endStatisticsTime}
+		</if>
+		<if test="userId != null">
+			AND oms_usersync_statistics.USERID = #{userId}
+		</if>
+	</select>
+
+	<select id="getUserLastSyncTime" parameterType="java.util.Map"
+		resultType="UserSyncStatistics">
+		SELECT
+		ID as id,SYNC_TIME as syncTime
+		FROM oms_usersync_statistics
+		WHERE
+		oms_usersync_statistics.OPERATE_TYPE = 22
+		AND
+		oms_usersync_statistics.USERID = #{userId}
+		<if test="endStatisticsTime != null">
+			AND oms_usersync_statistics.SYNC_TIME <![CDATA[<]]>
+			#{endStatisticsTime}
+		</if>
+		ORDER BY SYNC_TIME DESC LIMIT 1
+	</select>
+
+	<select id="getSyncUserList" parameterType="java.util.Map"
+		resultType="String">
+		SELECT
+		oms_usersync_statistics.USERID
+		FROM oms_usersync_statistics
+		WHERE
+		oms_usersync_statistics.OPERATE_TYPE = 22
+		AND
+		oms_usersync_statistics.USERID != 'unknown'
+		AND
+		oms_usersync_statistics.SYNC_TIME > #{startStatisticsTime}
+		AND
+		oms_usersync_statistics.SYNC_TIME <![CDATA[<]]>
+		#{endStatisticsTime}
+		GROUP BY oms_usersync_statistics.USERID
+	</select>
+
+	<insert id="insertUserSyncStatistics" parameterType="UserSyncStatistics">
+		INSERT INTO
+		oms_usersync_statistics
+		(DEVICEID, SOURCE, VERSION, NETWORK, IP,
+		OPERATE_TYPE, USERID,
+		LOGIN_TYPE, SYNC_TIME, SYSTEM_TIME)
+		VALUES
+		(#{deviceId}, #{source}, #{version},
+		#{network}, #{ip}, #{operateType},
+		#{userId},
+		#{loginType}, #{syncTime}, #{systemTime})
+	</insert>
+
+</mapper>
